@@ -83,7 +83,6 @@ namespace Log
             }
 
             file_.open(filename_, std::ios::app);
-            file_ << std::unitbuf;
             if (!file_.is_open()) {
                 std::cerr << "文件打开失败 " << filename_ << std::endl;
             }
