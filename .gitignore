@@ -1,0 +1,80 @@
+# ================================
+# 1. CLion 专属文件 (JetBrains IDE)
+# ================================
+# 整个IDE的工作区配置目录，包含用户特定设置
+.idea/
+# CMake的本地构建输出目录（CLion默认生成）
+cmake-build-*/
+# CLion的特定工作文件
+*.iws
+*.iml
+*.ipr
+
+# ================================
+# 2. CMake 构建系统
+# ================================
+# 任何 CMake 生成的构建目录
+build/
+out/
+# CMake 缓存、配置和测试文件
+CMakeCache.txt
+CMakeFiles/
+CMakeScripts/
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+Makefile
+CTestTestfile.cmake
+_deps/           # 外部依赖下载目录
+Testing/         # CTest 测试输出
+
+# ================================
+# 3. 编译输出与二进制文件
+# ================================
+# 可执行文件和库
+*.exe
+*.out
+*.app
+*.so
+*.so.*
+*.dylib
+*.dll
+*.a
+*.lib
+*.o
+*.obj
+*.ko
+
+# ================================
+# 4. 跨平台系统文件
+# ================================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+# Windows
+Thumbs.db
+ehthumbs.db
+[Dd]esktop.ini
+$RECYCLE.BIN/
+# Linux
+*~
+
+# ================================
+# 5. 项目运行时/日志/临时文件
+# ================================
+# 系统可能产生的数据、日志或临时文件
+*.log
+*.tmp
+*.temp
+data/            # 假设有本地测试数据目录（如果不需要提交）
+logs/            # 假设有日志输出目录（如果不需要提交）
+cache/           # 假设有缓存目录
+
+# ================================
+# 6.项目设计文件
+# ================================
+项目设计.md
