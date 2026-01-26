@@ -97,7 +97,7 @@ namespace RefStorage::Utils {
     }
 
 
-    //计算文件或文件夹的哈希值
+    //计算文件或文件夹的哈希值（校验和）
     std::string HashUtils::calculateHash(const std::filesystem::path& path) {
         if (!std::filesystem::exists(path)) {
             LOG_ERROR_FMT("路径不存在: {0}", path.string());

@@ -21,7 +21,6 @@ int main()
     logger.AddConsoleSink(Log::Level::LVL_DEBUG, true);
     logger.AddFileSink("app.log", Log::Level::LVL_DEBUG);
 
-
     int exitCode = 0;
 
     try {
