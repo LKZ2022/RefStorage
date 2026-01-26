@@ -81,10 +81,6 @@ namespace RefStorage::Utils {
     private:
 
         //辅助函数：
-
-        //将权限准换为字符串
-        static std::string permissionTostring(std::filesystem::perms permission);
-
         // 收集文件夹中的所有文件信息
         static void collectFiles(const std::filesystem::path& base_dir,
                                           std::set<FileInfo>& file_infos,

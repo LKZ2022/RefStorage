@@ -164,23 +164,6 @@ namespace RefStorage::Utils {
         return prefix + std::to_string(timestamp) + "_" + std::to_string(random) + ".tmp";
     }
 
-    std::string FileUtils::permissionTostring(std::filesystem::perms permission) {
-        std::string result;
-
-        //比对文件权限
-        result.push_back((permission & std::filesystem::perms::owner_read  ) != std::filesystem::perms::none ? 'r' : '-');
-        result.push_back((permission & std::filesystem::perms::owner_write ) != std::filesystem::perms::none ? 'w' : '-');
-        result.push_back((permission & std::filesystem::perms::owner_exec  ) != std::filesystem::perms::none ? 'x' : '-');
-        result.push_back((permission & std::filesystem::perms::group_read  ) != std::filesystem::perms::none ? 'r' : '-');
-        result.push_back((permission & std::filesystem::perms::group_write ) != std::filesystem::perms::none ? 'w' : '-');
-        result.push_back((permission & std::filesystem::perms::group_exec  ) != std::filesystem::perms::none ? 'x' : '-');
-        result.push_back((permission & std::filesystem::perms::others_read ) != std::filesystem::perms::none ? 'r' : '-');
-        result.push_back((permission & std::filesystem::perms::others_write) != std::filesystem::perms::none ? 'w' : '-');
-        result.push_back((permission & std::filesystem::perms::others_exec ) != std::filesystem::perms::none ? 'x' : '-');
-
-        return result;
-    }
-
     void FileUtils::collectFiles(const std::filesystem::path& base_dir,
                                           std::set<FileInfo>& file_infos,
                                      std::set<DirectoryInfo>& dir_infos) {
