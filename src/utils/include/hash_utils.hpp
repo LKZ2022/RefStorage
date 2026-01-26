@@ -28,5 +28,6 @@ namespace RefStorage::Utils {
 
         //判断两个哈希值是否相等
         static bool isEqualHash(const std::string& hash1, const std::string& hash2);
+
     };
 }

@@ -87,5 +87,4 @@ namespace RefStorage::Utils {
         static bool compareDirInfos(const DirectoryInfo& info1, const DirectoryInfo& info2);
 
     };
-
 }
