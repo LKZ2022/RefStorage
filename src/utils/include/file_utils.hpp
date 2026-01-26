@@ -8,6 +8,8 @@
 #include <vector>
 #include <set>
 
+#include "LogMacros.hpp"
+
 namespace RefStorage::Utils {
 
     class FileUtils {
@@ -27,12 +29,6 @@ namespace RefStorage::Utils {
                 return relative_path < other.relative_path;
             }
 
-            bool operator==(const FileInfo& other) const {
-                return relative_path == other.relative_path
-                        && file_size == other.file_size
-                      && permissions == other.permissions
-                             && hash == other.hash;
-            }
         };
 
         //目录信息
@@ -46,11 +42,6 @@ namespace RefStorage::Utils {
                 return relative_path < other.relative_path;
             }
 
-            bool operator==(const DirectoryInfo& other) const {
-                return relative_path == other.relative_path
-                         && is_empty == other.is_empty
-                      && permissions == other.permissions;
-            }
         };
 
 
@@ -81,15 +72,19 @@ namespace RefStorage::Utils {
     private:
 
         //辅助函数：
-
-        //将权限准换为字符串
-        static std::string permissionTostring(std::filesystem::perms permission);
-
         // 收集文件夹中的所有文件信息
         static void collectFiles(const std::filesystem::path& base_dir,
                                           std::set<FileInfo>& file_infos,
                                      std::set<DirectoryInfo>& dir_infos);
 
+        //权限转字符串
+        static std::string permissionsToString(std::filesystem::perms p);
+
+        // 比较文件信息
+        static bool compareFileInfos(const FileInfo& info1, const FileInfo& info2);
+
+        // 比较目录信息
+        static bool compareDirInfos(const DirectoryInfo& info1, const DirectoryInfo& info2);
 
     };
 

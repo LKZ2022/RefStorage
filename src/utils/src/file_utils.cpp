@@ -164,23 +164,6 @@ namespace RefStorage::Utils {
         return prefix + std::to_string(timestamp) + "_" + std::to_string(random) + ".tmp";
     }
 
-    std::string FileUtils::permissionTostring(std::filesystem::perms permission) {
-        std::string result;
-
-        //比对文件权限
-        result.push_back((permission & std::filesystem::perms::owner_read  ) != std::filesystem::perms::none ? 'r' : '-');
-        result.push_back((permission & std::filesystem::perms::owner_write ) != std::filesystem::perms::none ? 'w' : '-');
-        result.push_back((permission & std::filesystem::perms::owner_exec  ) != std::filesystem::perms::none ? 'x' : '-');
-        result.push_back((permission & std::filesystem::perms::group_read  ) != std::filesystem::perms::none ? 'r' : '-');
-        result.push_back((permission & std::filesystem::perms::group_write ) != std::filesystem::perms::none ? 'w' : '-');
-        result.push_back((permission & std::filesystem::perms::group_exec  ) != std::filesystem::perms::none ? 'x' : '-');
-        result.push_back((permission & std::filesystem::perms::others_read ) != std::filesystem::perms::none ? 'r' : '-');
-        result.push_back((permission & std::filesystem::perms::others_write) != std::filesystem::perms::none ? 'w' : '-');
-        result.push_back((permission & std::filesystem::perms::others_exec ) != std::filesystem::perms::none ? 'x' : '-');
-
-        return result;
-    }
-
     void FileUtils::collectFiles(const std::filesystem::path& base_dir,
                                           std::set<FileInfo>& file_infos,
                                      std::set<DirectoryInfo>& dir_infos) {
@@ -231,6 +214,48 @@ namespace RefStorage::Utils {
 
     }
 
+    bool FileUtils::compareFileInfos(const FileInfo& info1, const FileInfo& info2) {
+        // 检查路径
+        if (info1.relative_path != info2.relative_path) {
+            return false;
+        }
+
+        // 检查文件大小
+        if (info1.file_size != info2.file_size) {
+            return false;
+        }
+
+        // 检查元数据
+        if (info1.permissions != info2.permissions) {
+            return false;
+        }
+
+        // 检查哈希值
+        if (!info1.hash.empty() && !info2.hash.empty()) {
+            return info1.hash == info2.hash;
+        }
+
+        return true;
+    }
+
+    bool FileUtils::compareDirInfos(const DirectoryInfo& info1, const DirectoryInfo& info2) {
+        if (info1.relative_path != info2.relative_path) {
+            return false;
+        }
+
+        // 检查是否都为空或都不为空
+        if (info1.is_empty != info2.is_empty) {
+            return false;
+        }
+
+        // 检查元数据（如果启用）
+        if (info1.permissions != info2.permissions) {
+            return false;
+        }
+
+        return true;
+    }
+
     bool FileUtils::compare_files(const std::filesystem::path &dir1, const std::filesystem::path &dir2) {
 
         try {
@@ -257,21 +282,22 @@ namespace RefStorage::Utils {
             auto it2 = files2.begin();
 
             while (it1 != files1.end() && it2 != files2.end()) {
-                if (it1 != it2) {
+                if (!compareFileInfos(*it1, *it2)) {
                     LOG_INFO_FMT("文件不同:{0} ",it1->relative_path);
+                    LOG_INFO_FMT("文件1信息：\n相对路径：{0}文件大小：{1}权限：{2}哈希值：{3}", it1->relative_path, it1->file_size, permissionsToString(it1->permissions), it1->hash);
+                    LOG_INFO_FMT("文件1信息：\n相对路径：{0}文件大小：{1}权限：{2}哈希值：{3}", it2->relative_path, it2->file_size, permissionsToString(it2->permissions), it2->hash);
                     return false;
                 }
                 ++it1;
                 ++it2;
             }
 
-            // 比较文件夹（如果启用了空文件夹检查）
-
+            // 比较文件夹
             auto dir_it1 = dirs1.begin();
             auto dir_it2 = dirs2.begin();
 
             while (dir_it1 != dirs1.end() && dir_it2 != dirs2.end()) {
-                if (dir_it1 != dir_it2) {
+                if (!compareDirInfos(*dir_it1, *dir_it2)) {
                     LOG_INFO_FMT("文件夹不同:{0} ", dir_it1->relative_path);
                     return false;
                 }
@@ -287,5 +313,21 @@ namespace RefStorage::Utils {
             return false;
         }
 
+    }
+
+    std::string FileUtils::permissionsToString(std::filesystem::perms p) {
+        std::string result;
+
+        result.push_back((p & std::filesystem::perms::owner_read) != std::filesystem::perms::none ? 'r' : '-');
+        result.push_back((p & std::filesystem::perms::owner_write) != std::filesystem::perms::none ? 'w' : '-');
+        result.push_back((p & std::filesystem::perms::owner_exec) != std::filesystem::perms::none ? 'x' : '-');
+        result.push_back((p & std::filesystem::perms::group_read) != std::filesystem::perms::none ? 'r' : '-');
+        result.push_back((p & std::filesystem::perms::group_write) != std::filesystem::perms::none ? 'w' : '-');
+        result.push_back((p & std::filesystem::perms::group_exec) != std::filesystem::perms::none ? 'x' : '-');
+        result.push_back((p & std::filesystem::perms::others_read) != std::filesystem::perms::none ? 'r' : '-');
+        result.push_back((p & std::filesystem::perms::others_write) != std::filesystem::perms::none ? 'w' : '-');
+        result.push_back((p & std::filesystem::perms::others_exec) != std::filesystem::perms::none ? 'x' : '-');
+
+        return result;
     }
 }

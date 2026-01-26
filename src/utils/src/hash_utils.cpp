@@ -19,7 +19,7 @@ namespace RefStorage::Utils {
 
         ss << std::hex << std::setfill('0');
         for (size_t i = 0; i < length; i++) {
-            ss << std::setw(2) << static_cast<int>(bytes[i]);
+            ss << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(bytes[i]);
         }
 
         return ss.str();
@@ -29,28 +29,39 @@ namespace RefStorage::Utils {
     //计算文件哈希值
     std::string HashUtils::calculateFileHash(const std::filesystem::path &filePath) {
         std::ifstream file(filePath, std::ios::binary);
-
         if (!file.is_open()) {
             throw std::runtime_error("无法打开文件: " + filePath.string());
         }
-        //创建哈希上下文
-        EVP_MD_CTX* loc_ctx = EVP_MD_CTX_new();
-        //局部缓冲区
-        char loc_buffer[4096] = {0};
 
-        EVP_DigestInit_ex(loc_ctx, EVP_sha256(), nullptr);
+        EVP_MD_CTX* mdctx = EVP_MD_CTX_new();
+        const EVP_MD* md = EVP_sha256();
 
-        while (file.read(loc_buffer, sizeof(loc_buffer))) {
-            EVP_DigestUpdate(loc_ctx, loc_buffer, file.gcount());
+        if (EVP_DigestInit_ex(mdctx, md, nullptr) != 1) {
+            EVP_MD_CTX_free(mdctx);
+            throw std::runtime_error("SHA256初始化失败");
         }
-        EVP_DigestUpdate(loc_ctx, loc_buffer, file.gcount());
 
-        unsigned char loc_hash[EVP_MAX_MD_SIZE];
-        EVP_DigestFinal_ex(loc_ctx, loc_hash, nullptr);
+        const size_t buffer_size = 4096;
+        char buffer[buffer_size];
 
-        EVP_MD_CTX_free(loc_ctx);
+        while (file.read(buffer, buffer_size) || file.gcount() > 0) {
+            if (EVP_DigestUpdate(mdctx, buffer, file.gcount()) != 1) {
+                EVP_MD_CTX_free(mdctx);
+                throw std::runtime_error("SHA256计算失败");
+            }
+        }
 
-        return bytesToHex(loc_hash, EVP_MAX_MD_SIZE);
+        unsigned char hash[EVP_MAX_MD_SIZE];
+        unsigned int hash_len;
+
+        if (EVP_DigestFinal_ex(mdctx, hash, &hash_len) != 1) {
+            EVP_MD_CTX_free(mdctx);
+            throw std::runtime_error("SHA256计算失败");
+        }
+
+        EVP_MD_CTX_free(mdctx);
+
+        return bytesToHex(hash, hash_len);
     }
 
 

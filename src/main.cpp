@@ -5,6 +5,8 @@
 #include "hash_utils.hpp"
 #include <iostream>
 
+#include "file_utils.hpp"
+
 #ifdef _WIN32
 #include <windows.h>
 #endif
@@ -24,24 +26,21 @@ int main()
     int exitCode = 0;
 
     try {
-        std::cout << "===测试哈希值计算功能===\n\n";
+        std::cout << "===测试文件比较功能===\n\n";
+        std::filesystem::path path1;
+        std::filesystem::path path2;
+        std::cout << "请输入路径1：";
+        std::cin >> path1;
+        std::cout << "请输入路径2：";
+        std::cin >> path2;
+        if (RefStorage::Utils::FileUtils::compare_files(path1, path2)) {
+            std::cout << "相同" << std::endl;
+        }
+        else {
+            std::cout << "不同" << std::endl;
+        }
 
-        std::string path1;
-        RefStorage::Utils::HashUtils hashUtils;
-        std::cout << "请输入文件路径：";
 
-        std::getline(std::cin, path1);
-        std::wstring widePath = std::wstring(path1.begin(), path1.end());
-        std::filesystem::path file_path = path1;
-        std::cout << "\n\n文件哈希为：";
-        std::cout << RefStorage::Utils::HashUtils::calculateHash(file_path);
-
-
-        std::string path2;
-        std::cout << "\n\n请输入文件夹路径：";
-        std::getline(std::cin, path2);
-        file_path = path2;
-        std::cout << RefStorage::Utils::HashUtils::calculateHash(file_path);
     }
     catch (const std::runtime_error& e) {
         std::cerr << "运行时错误: " << e.what() << '\n';
