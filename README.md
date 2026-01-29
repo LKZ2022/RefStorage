@@ -4,6 +4,11 @@
 
 **请注意：本项目目前处于积极开发阶段，核心功能正在构建中，尚未达到生产就绪状态。我们非常欢迎和期待社区的早期参与和贡献！**
 
+## 📚 子仓库链接
+
+### 🔗 直接访问
+- **存储服务器端**: https://github.com/LKZ2022/storage_node
+
 ##  功能特性
 
 -  **文件去重存储**：基于内容哈希消除重复数据，节省存储空间。
@@ -46,10 +51,14 @@
 
 ##  开始上手
 
-1.  **克隆仓库**
+1.  **克隆所有仓库**
     ```bash
+    # 克隆主仓库
     git clone https://github.com/LKZ2022/RefStorage.git
     cd RefStorage
+    # 克隆存储服务器
+    git clone https://github.com/LKZ2022/storage_node
+    cd storage_node 
     ```
 
 2.  **配置与构建**
